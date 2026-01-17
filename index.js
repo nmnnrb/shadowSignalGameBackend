@@ -9,15 +9,19 @@ const { getWords } = require("./ai");
 // const { startSpeakingPhase } = require("./speaking");
 const { startSpeakingPhase} = require("./speaking");
 
-
+require("dotenv").config();
 
 const app = express();
 const server = http.createServer(app);
 
+const CLIENT_URL = process.env.client_url || "http://localhost:3000";
+
 const io = new Server(server, {
-    path: "/socket.io",
+  path: "/socket.io",
   cors: {
-    origin: "*",
+    origin: CLIENT_URL,
+    methods: ["GET", "POST"],
+    credentials: true
   },
 });
 
