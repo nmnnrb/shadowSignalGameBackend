@@ -13,9 +13,14 @@
 
     const player = alivePlayers[room.currentTurnIndex];
 
-    io.to(room.code).emit("turnStarted", {
+   io.to(room.code).emit("turnStarted", {
       playerId: player.id,
-      name: player.name
+      name: player.name,
+      players: alivePlayers.map(p => ({
+        id: p.id,
+        name: p.name,
+        alive: p.alive
+      }))
     });
 
     setTimeout(() => {
@@ -25,7 +30,7 @@
 
       room.currentTurnIndex++;
       nextTurn();
-    }, 1000);
+    }, 10000);
   }
 
   nextTurn();

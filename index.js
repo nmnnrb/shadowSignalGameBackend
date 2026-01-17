@@ -15,6 +15,7 @@ const app = express();
 const server = http.createServer(app);
 
 const io = new Server(server, {
+    path: "/socket.io",
   cors: {
     origin: "*",
   },
@@ -62,6 +63,7 @@ io.on("connection", (socket) => {
 
   socket.on("createRoom", () => {
     const room = createRoom(socket.id);
+    socket.join(room.code);
     socket.emit("roomCreated", room);
   });
 
@@ -139,12 +141,11 @@ const safeRoom = {
 
 io.to(code).emit("gameStarted", safeRoom);
 
-// Send private roles
+// Send private roles and words
 result.players.forEach(player => {
   io.to(player.id).emit("yourRole", player.role);
+  io.to(player.id).emit("yourWord", player.word);
 });
-
-
 
 setTimeout(() => {
   runGameLoop(result, io);
@@ -247,6 +248,32 @@ socket.on("requestRole", ({ code }) => {
   });
 
   
+
+  //----x--x-x--x-AUDIO WEB-RTC COnfig---x-x--x-x--x-x-x-x-x-x-x-x-x
+
+  socket.on("webrtc-offer", ({ to, offer }) => {
+  io.to(to).emit("webrtc-offer", {
+    from: socket.id,
+    offer
+  });
+});
+
+socket.on("webrtc-answer", ({ to, answer }) => {
+  io.to(to).emit("webrtc-answer", {
+    from: socket.id,
+    answer
+  });
+});
+
+socket.on("webrtc-ice", ({ to, candidate }) => {
+  io.to(to).emit("webrtc-ice", {
+    from: socket.id,
+    candidate
+  });
+});
+
+
+//----x--x--x-x-x--x-x-x-x--x-x-x--x-x-x-x---x-x-x---x-x
   
 
 
