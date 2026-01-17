@@ -16,6 +16,10 @@ const server = http.createServer(app);
 
 const CLIENT_URL = process.env.client_url || "http://localhost:3000";
 
+app.use(express.json());
+app.use(cors({
+  origin: CLIENT_URL
+}));
 const io = new Server(server, {
   path: "/socket.io",
   cors: {
@@ -26,7 +30,7 @@ const io = new Server(server, {
 });
 
 app.get("/", (req, res) => {
-  res.send("Shadow Signal server is running");
+  res.status(200).json({ status: "ok", message: "Backend is online" });
 });
 
 function runGameLoop(room, io) {
