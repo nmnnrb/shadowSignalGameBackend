@@ -8,7 +8,7 @@ const { assignRoles , eliminatePlayer, startVotingPhase,
 const { getWords } = require("./ai");
 // const { startSpeakingPhase } = require("./speaking");
 const { startSpeakingPhase} = require("./speaking");
-
+const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
@@ -20,6 +20,7 @@ app.use(express.json());
 app.use(cors({
   origin: CLIENT_URL
 }));
+
 const io = new Server(server, {
   path: "/socket.io",
   cors: {
